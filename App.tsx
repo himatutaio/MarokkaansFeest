@@ -8,6 +8,7 @@ import AddServiceForm from './components/AddServiceForm';
 import Inspiration from './components/Inspiration';
 import About from './components/About';
 import HowItWorks from './components/HowItWorks';
+import Favorites from './components/Favorites';
 import { MOCK_PROVIDERS, CATEGORIES } from './constants';
 import { Provider, Category, BudgetItem } from './types';
 
@@ -58,6 +59,10 @@ const Navbar = ({ budgetItems }: { budgetItems: BudgetItem[] }) => {
                  </span>
               )}
             </Link>
+            <Link to="/favorites" className={`flex items-center gap-2 ${isActive('/favorites')}`}>
+                <Heart size={18} className={location.pathname === '/favorites' ? "fill-emerald-600" : ""} />
+                <span>Favorieten</span>
+            </Link>
             <Link to="/inspiration" className={isActive('/inspiration')}>Inspiratie</Link>
             <Link 
               to="/add-service" 
@@ -84,6 +89,9 @@ const Navbar = ({ budgetItems }: { budgetItems: BudgetItem[] }) => {
              <Link to="/budget" onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-slate-600 flex justify-between items-center">
                 <span>Budget Planner</span>
                 {itemCount > 0 && <span className="text-emerald-600 font-bold">€{totalCost.toLocaleString()}</span>}
+             </Link>
+             <Link to="/favorites" onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-slate-600 flex items-center gap-2">
+                <Heart size={16} /> Favorieten
              </Link>
              <Link to="/inspiration" onClick={() => setIsMobileMenuOpen(false)} className="block py-2 text-slate-600">Inspiratie</Link>
              <Link 
@@ -187,7 +195,7 @@ const Home = ({
                 className="w-full bg-transparent outline-none text-slate-900 placeholder:text-slate-400"
               />
             </div>
-            <button className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3 sm:py-0 rounded-full font-medium transition-colors mt-2 sm:mt-0">
+            <button className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3 sm:py-0 rounded-full font-medium transition-colors mt-2 sm:mt-0 w-auto self-center sm:self-auto sm:w-auto">
               Zoeken
             </button>
           </div>
@@ -403,6 +411,17 @@ function App() {
             <Route 
               path="/budget" 
               element={<BudgetPlanner items={budgetItems} setItems={setBudgetItems} />} 
+            />
+            <Route 
+              path="/favorites" 
+              element={
+                <Favorites 
+                  providers={providers} 
+                  onAddToBudget={handleAddToBudget} 
+                  onRemoveProvider={handleRemoveProvider}
+                  budgetItems={budgetItems}
+                />
+              } 
             />
             <Route 
               path="/inspiration" 

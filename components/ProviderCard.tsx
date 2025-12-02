@@ -7,9 +7,10 @@ interface ProviderCardProps {
   onAddToBudget: (provider: Provider) => void;
   onDelete?: (id: string) => void;
   isAdded?: boolean;
+  onToggleFavorite?: (id: string, isFavorite: boolean) => void;
 }
 
-const ProviderCard: React.FC<ProviderCardProps> = ({ provider, onAddToBudget, onDelete, isAdded = false }) => {
+const ProviderCard: React.FC<ProviderCardProps> = ({ provider, onAddToBudget, onDelete, isAdded = false, onToggleFavorite }) => {
   const [showContact, setShowContact] = useState(false);
   const [formState, setFormState] = useState({ name: '', email: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -48,15 +49,22 @@ const ProviderCard: React.FC<ProviderCardProps> = ({ provider, onAddToBudget, on
     try {
       const stored = localStorage.getItem('favoriteProviders');
       let favorites: string[] = stored ? JSON.parse(stored) : [];
+      let newIsFavorite = !isFavorite;
 
       if (isFavorite) {
         favorites = favorites.filter(id => id !== provider.id);
+        newIsFavorite = false;
       } else {
         favorites.push(provider.id);
+        newIsFavorite = true;
       }
 
       localStorage.setItem('favoriteProviders', JSON.stringify(favorites));
-      setIsFavorite(!isFavorite);
+      setIsFavorite(newIsFavorite);
+      
+      if (onToggleFavorite) {
+        onToggleFavorite(provider.id, newIsFavorite);
+      }
     } catch (error) {
       console.error('Error updating favorites:', error);
     }
